@@ -1,0 +1,21 @@
+SPACE - Next unread message (unread) | Next message ->
+
+L - Read replies (unread/all in replies) | Last open reply (unread/ all in replies) | X
+
+S - Skip replies  | X
+
+H - Prev level | X
+
+
+
+
+Prefered order inside one layer:
+
+Primary:
+
+----> Unread Messages
+----> Read messages which have unread replies (live threads) ?
+----> Read messages
+
+Secondary:
+----> Stored order
