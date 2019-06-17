@@ -1,21 +1,19 @@
-SPACE - Next unread message (unread) | Next message ->
-
-L - Read replies (unread/all in replies) | Last open reply (unread/ all in replies) | X
-
-S - Skip replies  | X
-
-H - Prev level | X
+# In  TOPICNAME (ALL), New messages: (NEW), Unread: (unread)
 
 
+SPACE - Jump to next unread message | Back to topics
+L -  Next new message | Next topic with new messages | Back to topics
+H -  Prev new message | Back to topics
+S -  Skip thread | Next topic | Back to topics
+Esc - | Back to topics
 
 
-Prefered order inside one layer:
+# Reading TOPICNAME (ALL)
 
-Primary:
+SPACE - Jump to next unread message | Back to topics
+L -  Next message | Next topic
+H -  Prev message | Back to topics
+S -  Skip thread | Next topic | Back to topics
 
-----> Unread Messages
-----> Read messages which have unread replies (live threads) ?
-----> Read messages
 
-Secondary:
-----> Stored order
+Esc - | Back to topics
