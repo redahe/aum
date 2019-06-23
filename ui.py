@@ -44,6 +44,7 @@ class MainForm(npyscreen.FormBaseNew):
         self.sources.entry_widget.handlers[ord('\n')] = self.select_source
         self.sources.entry_widget.handlers[ord('/')] = self.sources.entry_widget.h_set_filter
 
+        self.topics.entry_widget.handlers[ord('h')] = self.back_to_sources
         self.topics.entry_widget.handlers[ord('l')] = self.select_topic
         self.topics.entry_widget.handlers[ord('\n')] = self.select_topic
         self.topics.entry_widget.handlers[ord('/')] = self.topics.entry_widget.h_set_filter
@@ -56,18 +57,20 @@ class MainForm(npyscreen.FormBaseNew):
                                "2018-09-19T2002Z    Анатолий Обросков",
                                "2018-09-19T2002Z    another message"]
 
-    def select_source(self, ch):
+    def back_to_sources(self, ch):
+        self.set_status('not selected')
         self.sources.entry_widget.h_select_exit(ch)
-        self.sources.editing=False
-        self.sources.entry_widget.editing=False
-        self.sources.how_exited=True
-        self.editw=1
+        self.sources.edit()
+        self.sources.editing = False
+
+    def select_source(self, ch):
         self.set_status('selected')
+        self.sources.entry_widget.h_select_exit(ch)
+        self.topics.edit()
 
     def select_topic(self, ch):
         self.set_status(self.topics.entry_widget.get_selected_objects())
-        self.parentApp.switchForm('Viewer')
-        self.parentApp.pager_form.lines=7
+        self.parentApp.pager_form.edit()
 
 
 class ViewForm(npyscreen.FormBaseNew):
@@ -80,37 +83,43 @@ class ViewForm(npyscreen.FormBaseNew):
 
         self.pager.handlers[ord("q")] = self.close
         self.pager.handlers[ord("h")] = self.close
-        self.pager.handlers[ord("l")] = self.close
+        self.pager.handlers[ord("l")] = self.sub_pager
 
     def close(self, ch):
-        self.parentApp.switchForm('MAIN')
-        self.parentApp.main_form.display()
+        self.prev.edit()
 
+    def sub_pager(self, ch):
+        self.parentApp.pager_form2.edit()
 
-class App(npyscreen.NPSAppManaged):
+class App(npyscreen.NPSApp):
 
-    def onStart(self):
+    def main(self):
         npyscreen.setTheme(npyscreen.Themes.TransparentThemeLightText)
 
-        self.main_form = self.addForm('MAIN', MainForm, name= '[0] Main Form')
-        self.pager_form = self.addForm("Viewer",
-                                       ViewForm,
-                                       lines=terminal_dimensions()[0] - 9,
-                                       columns=terminal_dimensions()[1] - 9,
-                                       name='[1] Topic')
+        self.main_form = MainForm(name= '[0] Main Form')
+        self.main_form.parentApp = self
 
-        self.pager_form2 = self.addForm("Viewer2",
-                                        ViewForm,
-                                        lines=terminal_dimensions()[0] - 10,
-                                        columns=terminal_dimensions()[1] - 10,
-                                        name='[2] Some....')
+        self.pager_form = ViewForm(lines=terminal_dimensions()[0] - 9,
+                                   columns=terminal_dimensions()[1] - 9,
+                                   name='[1] Topic')
+        self.pager_form.parentApp = self
+
+        self.pager_form2 = ViewForm( lines=terminal_dimensions()[0] - 10,
+                                    columns=terminal_dimensions()[1] - 10,
+                                    name='[2] Some....')
+        self.pager_form2.parentApp = self
+
         self.pager_form.show_aty=1
         self.pager_form.show_atx=1
         self.pager_form2.show_aty=2
         self.pager_form2.show_atx=2
+        self.pager_form.prev = self.main_form
+        self.pager_form2.prev = self.pager_form
+
+        self.main_form.edit()
 
     def disp_pager(self, arg):
-        self.switchForm("Viewer")
+        self.pager_form.edit()
 
 
 class Column(npyscreen.BoxTitle):
